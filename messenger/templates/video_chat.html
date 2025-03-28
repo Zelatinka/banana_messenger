@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Video Chat - {{ conversation.id }}{% endblock %}
+
+{% block content %}
+    <h1>Video Chat</h1>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.11.1/simplepeer.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        #video-container {
+            display: flex;
+            gap: 10px;
+        }
+        video {
+            width: 300px;
+            height: 200px;
+            border: 1px solid #ccc;
+        }
+    </style>
+
+    <!-- Video Chat Section -->
+    <div id="video-container"></div>
+    <button id="start-video-chat">Start Video Chat</button>
+
+    <!-- Pass participant IDs as JSON -->
+    {{ participant_ids|json_script:"participants" }}
+
+    <script>
+        let localStream;
+        let peerConnections = {};
+        const videoContainer = document.getElementById("video-container");
+
+        const socket = new WebSocket(`ws://${window.location.host}/ws/chat/{{ conversation.id }}/`);
+
+        socket.onopen = function () {
+            console.log("WebSocket connection opened.");
+        };
+
+        socket.onerror = function (error) {
+            console.error("WebSocket error:", error);
+        };
+
+        socket.onclose = function (event) {
+            console.log("WebSocket connection closed. Code:", event.code, "Reason:", event.reason);
+        };
+
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            console.log("Received WebSocket message:", data);
+
+            if (data.type === "offer") {
+                handleOffer(data);
+            } else if (data.type === "answer") {
+                handleAnswer(data);
+            } else if (data.type === "candidate") {
+                handleCandidate(data);
+            }
+        };
+
+        async function startVideoChat() {
+            try {
+                console.log("Start Video Chat button clicked");
+
+                // Get local media stream
+                const mediaConstraints = {
+                    video: confirm("Do you want to share your camera?") || false,
+                    audio: confirm("Do you want to share your microphone?") || false,
+                };
+
+                localStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
+                addVideoStream(localStream, "local");
+
+                // Get participant IDs
+                const participantsElement = document.getElementById('participants');
+                if (!participantsElement) {
+                    console.error("Participants element not found.");
+                    return;
+                }
+
+                const participants = JSON.parse(participantsElement.textContent);
+                console.log("Participants:", participants);
+
+                if (participants.length < 2) {
+                    console.error("Not enough participants to start a video chat.");
+                    alert("You need at least one other participant to start a video chat.");
+                    return;
+                }
+
+                // Create peer connections for each participant
+                participants.forEach((userId) => {
+                    if (userId !== {{ request.user.id }}) {
+                        createPeerConnection(userId);
+                    }
+                });
+
+                // Send offers to all participants
+                sendOffers();
+            } catch (error) {
+                console.error("Error starting video chat:", error);
+                alert("Failed to start video chat. Please check your permissions.");
+            }
+        }
+
+        function createPeerConnection(userId) {
+            const pc = new RTCPeerConnection();
+
+            // Add local stream to the peer connection
+            if (localStream) {
+                localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+            }
+
+            // Handle ICE candidates
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.send(JSON.stringify({
+                        type: "candidate",
+                        candidate: event.candidate,
+                        targetUserId: userId,
+                    }));
+                }
+            };
+
+            // Handle incoming streams
+            pc.ontrack = (event) => {
+                addVideoStream(event.streams[0], userId);
+            };
+
+            peerConnections[userId] = pc;
+        }
+
+        function addVideoStream(stream, userId) {
+            const videoElement = document.createElement("video");
+            videoElement.srcObject = stream;
+            videoElement.playsInline = true;
+            videoElement.autoplay = true;
+            videoElement.setAttribute("data-user-id", userId);
+
+            videoContainer.appendChild(videoElement);
+        }
+
+        function sendOffers() {
+            for (const [userId, pc] of Object.entries(peerConnections)) {
+                createAndSendOffer(userId, pc);
+            }
+        }
+
+        async function createAndSendOffer(userId, pc) {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            socket.send(JSON.stringify({
+                type: "offer",
+                sdp: offer.sdp,
+                type: offer.type,
+                targetUserId: userId,
+            }));
+            console.log("Sent offer to user:", userId);
+        }
+
+        function handleOffer(data) {
+            const pc = peerConnections[data.senderId];
+            if (!pc) return;
+
+            pc.setRemoteDescription(new RTCSessionDescription(data));
+            pc.createAnswer().then(async (answer) => {
+                await pc.setLocalDescription(answer);
+
+                socket.send(JSON.stringify({
+                    type: "answer",
+                    sdp: answer.sdp,
+                    type: answer.type,
+                    senderId: "{{ request.user.id }}",
+                }));
+            });
+        }
+
+        function handleAnswer(data) {
+            const pc = peerConnections[data.senderId];
+            if (!pc) return;
+
+            pc.setRemoteDescription(new RTCSessionDescription(data));
+        }
+
+        function handleCandidate(data) {
+            const pc = peerConnections[data.senderId];
+            if (!pc) return;
+
+            pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+        }
+
+        document.getElementById("start-video-chat").addEventListener("click", startVideoChat);
+    </script>
+{% endblock %}

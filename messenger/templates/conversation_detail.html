@@ -1,0 +1,77 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Conversation - {{ conversation.id }}{% endblock %}
+
+{% block content %}
+    <div class="chat-container">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.11.1/simplepeer.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+        <h1 class="greetings">Conversation</h1>
+
+        <!-- Message Section -->
+        <div id="messages" class="message">
+            <nav>
+                <ul class="styled-scrollbar">
+                    {% for message in messages %}
+                        {%if message.sender.username == user_name%}
+                            <li class="message sent">{{ message.sender.username }}: {{ message.content }}</li>
+                        {%else%}
+                            <li class="message received">{{ message.sender.username }}: {{ message.content }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+        <form id="message-form" class="chat-input">
+            <input type="text" id="message-input" placeholder="Type a message..." />
+            <button type="submit">Send</button>
+        </form>
+
+        <!-- Pass participant IDs as JSON -->
+        {{ participant_ids|json_script:"participants" }}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const conversationId = "{{ conversation.id }}";
+            const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+            const socket = new WebSocket(`${wsProtocol}://${window.location.host}/ws/chat/${conversationId}/`);
+            
+            if (typeof SimplePeer === 'undefined') {
+                console.error("SimplePeer is not defined. Ensure the library is correctly included.");
+                return;
+            }
+
+            // WebSocket for text messages
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                if (data.type === "ping") {
+                    console.log("Received ping from server");
+                } else {
+                    console.log("Received message:", data);
+                    const messagesDiv = document.getElementById("messages");
+                    const messageElement = document.createElement("div");
+                    messageElement.textContent = `${data.sender_username}: ${data.message}`;
+                    messagesDiv.appendChild(messageElement);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
+            };
+
+            document.getElementById("message-form").addEventListener("submit", function (e) {
+                e.preventDefault();
+                const input = document.getElementById("message-input");
+                const message = input.value.trim();
+                if (message) {
+                    socket.send(JSON.stringify({
+                        message: message,
+                        sender_id: {{ request.user.id }}
+                    }));
+                    input.value = "";
+                }
+            });
+        });
+    </script>
+{% endblock %}

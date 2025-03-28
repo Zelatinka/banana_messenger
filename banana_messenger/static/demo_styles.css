@@ -1,0 +1,156 @@
+/* styles.css */
+
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Gradient Background */
+body {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+nav ul{
+    height:575px;
+    width:130%;
+    overflow:hidden;
+    overflow-y:scroll;
+    scrollbar-color: #fff #6e8efb;
+    scrollbar-width: auto;
+    list-style-type: none;
+}
+
+/* Menu area */ 
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Aligns content to the left */
+    border: 2px solid #333; /* Dark gray border */
+    border-radius: 8px; /* Optional: Rounded corners for aesthetics */
+    overflow: hidden; /* Ensures the gradient doesn't spill outside the header */
+    width: 100%;
+    margin: 20px auto; /* Centers the header horizontally */
+    padding: 0 20px; /* Adds spacing inside the header */
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff; /* White text for contrast */
+    background-color: #333; /* Dark gray background for the text area */
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.menu-header {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Chat Container */
+.chat-container {
+    width: 400px;
+    height: 800px;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat Header */
+.chat-header {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Chat Messages Area */
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* Individual Message Styles */
+.message {
+    max-width: 80%;
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.message.sent {
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-left: 60px;
+    align-self: flex-end;
+    color: #fff;
+}
+
+.message.received {
+    background-color: rgba(255, 255, 255, 0.1);
+    align-self: flex-start;
+    color: #fff;
+}
+
+/* Chat Input Area */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 14px;
+}
+
+input::placeholder {
+    font-weight: bold;
+    opacity: 0.5;
+    color: #fff;
+  }
+
+.chat-input input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 15px;
+    background-color: #6e8efb;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #a777e3;
+}

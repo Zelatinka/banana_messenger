@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h1 class="greetings">Welcome, {{ user.username }}!</h1>
+        <div class="content">
+            <h2>Conversations</h2>
+            <ul>
+                {% for conversation in conversations %}
+                    <li>
+                        <a href="{% url 'conversation_detail' conversation.id %}">
+                                {{ conversation }}
+                        </a>
+                        <a href="{% url 'video_chat' conversation.id %}">Video Chat</a>
+                    </li>
+                {% empty %}
+                    <li>No conversations yet. Start a new conversation.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Create New Conversation</h2>
+            <form action="{% url 'start_group_conversation' %}">
+                    <button type="submit">Start Conversation</button>
+            </form>
+
+            <h2>Friends</h2>
+            <ul>
+                {% for friend in request.user.friends.all %}
+                    <li>
+                        <a href="{% url 'user_profile' friend.id %}">{{ friend.username }}</a>
+                    </li>
+                {% empty %}
+                    <li>No friends yet. Add friends from their profiles.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Add Friends</h2>
+            <ul>
+                {% for user in all_users %}
+                    {% if not user == request.user and not user in request.user.friends.all %}
+                        <li>
+                            <a href="{% url 'user_profile' user.id %}">{{ user.username }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <form action="{% url 'friend_list' %}">
+                <button type="submit">Friends</button>
+            </form>
+        </div>
+    {% else %}
+        <p>You are not logged in. Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a>.</p>
+    {% endif %}
+{% endblock %}

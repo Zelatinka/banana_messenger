@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+    <div class="user-profile">
+        <h1>{{ user.username }}'s Profile</h1>
+        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" style="width: 100px; height: 100px;">
+        <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio available." }}</p>
+
+        {% if not is_friend and not has_pending_request and user != request.user %}
+            <form action="{% url 'send_friend_request' user.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Add Friend</button>
+            </form>
+        {% elif is_friend %}
+            <p>You are already friends with {{ user.username }}.</p>
+        {% elif has_pending_request %}
+            <p>Friend request already sent to {{ user.username }}.</p>
+        {% endif %}
+
+        <h1>Edit Your Profile</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>Bio:</label>
+            <textarea name="bio">{{ user.profile.bio }}</textarea><br>
+            <label>Profile Picture:</label>
+            <input type="file" name="profile_picture"><br>
+            <button type="submit">Save</button>
+        </form>
+
+        <script>
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const response = await fetch('{% url "update_profile" %}', {
+                    method: 'POST',
+                    body: formData,
+                });
+                if (response.ok) {
+                    alert('Profile updated successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Failed to update profile.');
+                }
+            });
+        </script>
+    </div>
+{% endblock %}
