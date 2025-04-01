@@ -4,13 +4,13 @@ from django.contrib.auth import views as auth_views
 from messenger import views as messenger_views
 
 urlpatterns = [
+    re_path(r'^home', views.home, name='home'),
     path('register/', views.register, name='register'),
     path('', views.home, name='home'),
     path('start-conversation/<int:recipient_id>/', views.start_conversation, name='start_conversation'),
     path('start-group-conversation/', views.start_group_conversation, name='start_group_conversation'),
     path('conversation/<int:conversation_id>/', views.conversation_detail, name='conversation_detail'),
     path('video-chat/<int:conversation_id>/', views.video_chat, name='video_chat'),
-    #re_path(r'profile', views.home, name='home'),
     re_path(r'login', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', messenger_views.custom_logout, name='logout'),
     

@@ -3,25 +3,30 @@
 {% block title %}Video Chat - {{ conversation.id }}{% endblock %}
 
 {% block content %}
-    <h1>Video Chat</h1>
+    <h1 class="greetings">Video Chat</h1>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.11.1/simplepeer.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <style>
         #video-container {
             display: flex;
-            gap: 10px;
+            width: 16vw;
+            height: 12vw;
+            margin: 2vh 1vw;
         }
         video {
-            width: 300px;
-            height: 200px;
-            border: 1px solid #ccc;
+            width: 16vw;
+            height: 12vw;
+            border: 0.5vh solid #333;
+            border-radius: 0.35vh;
         }
     </style>
 
     <!-- Video Chat Section -->
     <div id="video-container"></div>
-    <button id="start-video-chat">Start Video Chat</button>
+    <div class="content">
+        <button id="start-video-chat">Start Video Chat</button>
+    </div>
 
     <!-- Pass participant IDs as JSON -->
     {{ participant_ids|json_script:"participants" }}

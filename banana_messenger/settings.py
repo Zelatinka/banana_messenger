@@ -122,3 +122,5 @@ STATIC_URL = 'banana_messenger/static/'
 STATICFILES_DIRS = [BASE_DIR / 'banana_messenger' / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/home'

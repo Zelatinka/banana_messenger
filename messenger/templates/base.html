@@ -60,7 +60,7 @@
 
         .menu-points{
             position: relative;
-            top: -29.5vh;
+            top: -24vh;
             left: 0.45vw;
             z-index: 100;
         }
@@ -180,6 +180,28 @@
             background: #a777e3;
         }
 
+        .content .user-list{
+            height: 68vh;
+            max-height: 68vh;
+            padding:   1vh 0.2vw;
+            text-align: left;
+            font-size: 1.6vh;
+            font-weight: bold;
+            overflow-y:scroll;
+            scrollbar-color: #333 #6e8efb;
+            scrollbar-width: auto;
+            list-style-type: none;
+        }
+
+        .content [type="checkbox"]{
+            background: linear-gradient(35deg,rgb(87, 124, 245),rgb(210, 161, 250));
+            width: 1vw;
+            height: 1vw;
+            border: 0.5vh solid #808080;
+            margin: 1vh 1vw;
+            box-shadow: 0 0.1vh 0.5vh rgba(0, 0, 0, 0.2);
+        }
+
         .chat-container{
             width: 35vw;
             height: 80vh;
@@ -264,7 +286,6 @@
         .chat-input button:hover {
             background: #a777e3;
         }
-
     </style>
 
 </head>
@@ -283,9 +304,9 @@
                         <button type="submit">Start Conversation</button>
                     </form></li>
                     <li><form action="{% url 'logout' %}">
-                        <button type="submit">Logout</button>
+                        <button type="submit" style="position: absolute; bottom: -54.5vh;">Logout</button>
                     </form></li>
-                </ul>
+                </ul
             </nav>
         </header>
 

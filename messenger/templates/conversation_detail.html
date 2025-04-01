@@ -12,9 +12,8 @@
         <h1 class="greetings">Conversation</h1>
 
         <!-- Message Section -->
-        <div id="messages" class="message">
-            <nav>
-                <ul class="styled-scrollbar">
+        <div class="message">
+                <ul class="styled-scrollbar" id="list">
                     {% for message in messages %}
                         {%if message.sender.username == user_name%}
                             <li class="message sent">{{ message.sender.username }}: {{ message.content }}</li>
@@ -23,7 +22,6 @@
                         {% endif %}
                     {% endfor %}
                 </ul>
-            </nav>
         </div>
         <form id="message-form" class="chat-input">
             <input type="text" id="message-input" placeholder="Type a message..." />
@@ -52,11 +50,12 @@
                     console.log("Received ping from server");
                 } else {
                     console.log("Received message:", data);
-                    const messagesDiv = document.getElementById("messages");
-                    const messageElement = document.createElement("div");
+                    const list = document.getElementById("list");
+                    const messageElement = document.createElement("li");
+                    messageElement.className = "message sent";
                     messageElement.textContent = `${data.sender_username}: ${data.message}`;
-                    messagesDiv.appendChild(messageElement);
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    list.appendChild(messageElement);
+                    list.scrollTop = list.scrollHeight;
                 }
             };
 

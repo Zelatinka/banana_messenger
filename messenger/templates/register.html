@@ -3,11 +3,94 @@
     {% load static %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background-repeat: no-repeat;
+            background-blend-mode: color;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .register{
+            position: absolute;
+            top: 10vh;
+            left: 25vw;
+            display: flex;display: flex;
+            align-items: left;
+            flex-direction: column;
+            border: 0.25vh solid #333;
+            border-radius: 0.9vh;
+            height: 80vh;
+            width: 50vw;
+            background-color: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 0.5vh 2vh rgba(0, 0, 0, 0.2);
+        }
+
+        .register p{
+            padding: 1.5vh 0 0 1.5vw;
+        }
+
+        .register input{
+            flex: 1;
+            padding: 1vh;
+            border: none;
+            border-radius: 0.5vh;
+            background-color: rgba(255, 255, 255, 0.1);
+            font-size: 1.5vh;
+            box-shadow: 0 0.5vh 2vh rgba(0, 0, 0, 0.2);
+        }
+
+        .register button{
+            width: 8.5vw;
+            margin: 1vh 0.5vw;
+            padding: 1.1vh 1.1vw;
+            border: 0.15vh solid #333;
+            border-radius: 0.3vh;
+            background:linear-gradient(35deg,rgb(87, 124, 245),rgb(210, 161, 250));
+            font-size: 0.69vw;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
+        }
+
+        .register button:hover{
+            background: #a777e3;
+        }
+
+        .register ul{
+            padding: 1.5vw;
+            list-style-type: none;
+        }
+
+        .greetings{
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2vh;
+            text-align: center;
+            border-bottom: 0.1vh solid rgba(255, 255, 255, 0.2);
+            font-size: 4vh;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+<body>
+    <div class="register">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>

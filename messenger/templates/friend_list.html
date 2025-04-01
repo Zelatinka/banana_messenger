@@ -3,40 +3,40 @@
 {% block title %}Friend List{% endblock %}
 
 {% block content %}
-    <div class="friend-list">
-        <h1 class="block-title">My Friends</h1>
-        <ul>
-            {% for friend in friends %}
-                <li>
-                    <a href="{% url 'user_profile' friend.id %}">{{ friend.username }}</a>
-                </li>
-            {% empty %}
-                <li>No friends yet.</li>
-            {% endfor %}
-        </ul>
+        <h1 class="greetings">My Friends</h1>
+        <div class="content">
+            <ul>
+                {% for friend in friends %}
+                    <li>
+                        <a href="{% url 'user_profile' friend.id %}">{{ friend.username }}</a>
+                    </li>
+                {% empty %}
+                    <li>No friends yet.</li>
+                {% endfor %}
+            </ul>
 
-        <h2 class="block-title">Incoming Friend Requests</h2>
-        <ul>
-            {% for request in incoming_requests %}
-                <li>
-                    {{ request.from_user.username }} wants to be friends.
-                    <a href="{% url 'accept_friend_request' request.id %}">Accept</a> |
-                    <a href="{% url 'reject_friend_request' request.id %}">Reject</a>
-                </li>
-            {% empty %}
-                <li>No incoming requests.</li>
-            {% endfor %}
-        </ul>
+            <h2>Incoming Friend Requests</h2>
+            <ul>
+                {% for request in incoming_requests %}
+                    <li>
+                        {{ request.from_user.username }} wants to be friends.
+                        <a href="{% url 'accept_friend_request' request.id %}">Accept</a> |
+                        <a href="{% url 'reject_friend_request' request.id %}">Reject</a>
+                    </li>
+                {% empty %}
+                    <li>No incoming requests.</li>
+                {% endfor %}
+            </ul>
 
-        <h2 class="block-title">Outgoing Friend Requests</h2>
-        <ul>
-            {% for request in outgoing_requests %}
-                <li>
-                    Request sent to {{ request.to_user.username }}.
-                </li>
-            {% empty %}
-                <li>No outgoing requests.</li>
-            {% endfor %}
-        </ul>
-    </div>
+            <h2>Outgoing Friend Requests</h2>
+            <ul>
+                {% for request in outgoing_requests %}
+                    <li>
+                        Request sent to {{ request.to_user.username }}.
+                    </li>
+                {% empty %}
+                    <li>No outgoing requests.</li>
+                {% endfor %}
+            </ul>
+        </div>
 {% endblock %}

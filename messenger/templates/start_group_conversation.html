@@ -3,19 +3,20 @@
 {% block title %}Start Coversation{% endblock %}
 
 {% block content %}
-    <h2>Create Group Conversation</h2>
-    <form id="checkboxForm" method="post">
-        {% csrf_token %}
-        <ul>
-          {% for user in all_users %}
-            <li>
-              <label>
-                <input type="checkbox" name="participants" value="{{ user.id }}">{{ user.username }}
-              </label><br>
-            </li>
-          {% endfor %}  
-        </ul>
-        <button type="submit">Create Group</button>
-    </form>
-    <p><a href="{% url 'home' %}">Back to Home</a></p>
+  <h1 class="greetings">Create Conversation</h1>
+  <div class="content">
+      <form id="checkboxForm" method="post">
+          {% csrf_token %}
+          <ul class="user-list">
+            {% for user in all_users %}
+              <li>
+                <label>
+                  <input class="checkbox" type="checkbox" name="participants" value="{{ user.id }}">{{ user.username }}
+                </label><br>
+              </li>
+            {% endfor %}  
+          </ul>
+          <button type="submit">Create Group</button>
+      </form>
+  </div>  
 {% endblock %}
